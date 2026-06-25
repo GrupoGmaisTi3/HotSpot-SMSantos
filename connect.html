@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>if(window.top!==window.self){window.top.location.href=window.self.location.href}</script>
+    <meta name="description" content="Login WiFi - Supermercado Santos" />
+    <meta name="theme-color" content="#E8732A" />
+    <title>Login - WiFi Supermercado Santos</title>
+    <script>
+        window.LOG_LEVEL = 'info';
+        window.HS_CONTEXT = {
+            macAddress: '$(mac-address)',
+            ipAddress: '$(ip)',
+            routerIdentity: '$(identity)',
+            hotspotUser: '$(username)',
+            sessionId: '$(session-id)',
+            loginBy: '$(login-by)',
+            page: 'connect'
+        };
+        window.LOG_ENDPOINT = '';
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a href="#main-content" style="position:fixed;top:-100%;left:50%;z-index:9999;background:var(--primary);color:#fff;padding:12px 24px;border-radius:0 0 8px 8px;font-weight:700;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Pular para conteúdo principal</a>
+
+    <!-- MikroTik CHAP Authentication -->
+    $(if chap-id)
+    <form name="sendin" action="$(link-login-only)" method="post" style="display:none">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+
+    <script src="/md5.js"></script>
+    <script>
+        function doLogin() {
+            document.sendin.username.value = document.login.username.value;
+            document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
+            document.sendin.submit();
+            return false;
+        }
+    </script>
+    $(endif)
+
+    <header class="header">
+        <img src="img/logo.png" alt="Supermercado Santos" class="logo" onerror="this.style.display='none'" />
+    </header>
+
+    <main id="main-content" role="main">
+
+        <section class="section--login" aria-labelledby="login-title">
+            <div class="login-header">
+                <h1 class="login-title" id="login-title">Acessar WiFi Grátis</h1>
+                <p class="login-subtitle">Entre com seu usuário ou cadastre-se na loja</p>
+            </div>
+
+            <form name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+                <input type="hidden" name="dst" value="$(link-orig)" />
+                <input type="hidden" name="popup" value="true" />
+
+                <label>
+                    <svg class="ico" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <input name="username" type="text" value="$(username)" placeholder="CPF ou Usuário" autocomplete="username" autofocus />
+                </label>
+
+                <label>
+                    <svg class="ico" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                    <input name="password" type="password" placeholder="Senha" autocomplete="current-password" />
+                </label>
+
+                <input type="submit" value="Conectar ao WiFi" />
+            </form>
+
+            <div class="info $(if error)alert$(endif)" role="alert">
+                $(if error)
+                    $(error)
+                $(else)
+                    Primeira vez? Cadastre-se no caixa ou atendimento.$(if trial == 'yes')<br />
+                    <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)">Usar acesso demo gratuito</a>
+                $(endif)
+            </div>
+
+            <div class="trust-badges" aria-label="Indicadores de confiança">
+                <div class="trust-badge">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                    Conexão Segura
+                </div>
+                <div class="trust-badge">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                    Dados Protegidos
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="quick-links" aria-label="Links rápidos">
+        <a href="$(link-login)#login-form" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Ver ofertas e informações
+        </a>
+        <a href="/status" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            Status
+        </a>
+        <a href="/logout" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            Sair
+        </a>
+    </nav>
+
+    <footer class="footer" role="contentinfo">
+        <p>Powered by MikroTik &bull; <span class="footer__brand">Supermercado Santos</span></p>
+    </footer>
+
+    <script src="js/quick-links.js"></script>
+    <script src="js/logger.js"></script>
+</body>
+
+</html>

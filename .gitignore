@@ -1,0 +1,25 @@
+# Credenciais e configuracao (contem dados reais)
+/js/config.js
+/api/config.php
+/config.py
+
+# Ambiente
+.env
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Exportacao de ofertas (regeneravel)
+/ofertas_export/
+/test_*.json
+/rp-auth.json
+
+# Logs (contem dados sensiveis - CPF, erros de autenticacao)
+*.log
+api/error.log
+ofertas_export/export.log
+
+# Python
+__pycache__/
+*.pyc

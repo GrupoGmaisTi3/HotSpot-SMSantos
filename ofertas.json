@@ -1,0 +1,43 @@
+{
+  "data": [
+    {
+      "codigo": "8407",
+      "unidades": "001",
+      "codigobarras": "7896023080487",
+      "descricaoproduto": "Conhaque Presidente 970ml",
+      "embalagem": "UN",
+      "preco": "17.98",
+      "descricaogrupo": "Adega",
+      "sequencialgrupo": "1",
+      "destacar": "N",
+      "oferta": "S",
+      "marca": "Presidente"
+    },
+    {
+      "codigo": "8408",
+      "unidades": "001",
+      "codigobarras": "7891132082346",
+      "descricaoproduto": "Refresco Mid 25g",
+      "embalagem": "UN",
+      "preco": "0.98",
+      "descricaogrupo": "Mercearia",
+      "sequencialgrupo": "2",
+      "destacar": "N",
+      "oferta": "S",
+      "marca": "Mid"
+    },
+    {
+      "codigo": "1234",
+      "unidades": "001",
+      "codigobarras": "7891000000000",
+      "descricaoproduto": "Alcatra Bovina kg",
+      "embalagem": "KG",
+      "preco": "38.90",
+      "descricaogrupo": "Açougue",
+      "sequencialgrupo": "3",
+      "destacar": "S",
+      "oferta": "S",
+      "marca": "Friboi"
+    }
+  ]
+}

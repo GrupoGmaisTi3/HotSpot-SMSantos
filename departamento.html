@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <script>if(window.top!==window.self){window.top.location.href=window.self.location.href}</script>
+    <meta name="description" content="Confira as ofertas por departamento no Supermercado Santos." />
+    <meta name="theme-color" content="#E8732A" />
+    <title>Departamento - WiFi Supermercado Santos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        window.LOG_LEVEL = 'info';
+        window.HS_CONTEXT = {
+            macAddress: '$(mac-address)',
+            ipAddress: '$(ip)',
+            routerIdentity: '$(identity)',
+            hotspotUser: '$(username)',
+            sessionId: '$(session-id)',
+            loginBy: '$(login-by)',
+            page: 'departamento'
+        };
+        window.LOG_ENDPOINT = '';
+    </script>
+</head>
+
+<body>
+
+    <a href="#main-content" style="position:fixed;top:-100%;left:50%;z-index:9999;background:var(--primary);color:#fff;padding:12px 24px;border-radius:0 0 8px 8px;font-weight:700;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Pular para conteúdo principal</a>
+
+    <header class="header">
+        <img src="img/logo.png" alt="Supermercado Santos" class="logo" onerror="this.style.display='none'" />
+        <a href="/login" class="dept-back-link" id="back-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill:currentColor;width:20px;height:20px;">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Voltar
+        </a>
+    </header>
+
+    <main id="main-content" role="main">
+
+        <section class="section--dept" id="dept-section" aria-labelledby="dept-title">
+            <div class="dept-header" id="dept-header">
+                <span class="dept-header__icon" id="dept-icon" aria-hidden="true"></span>
+                <div>
+                    <h1 class="dept-title" id="dept-title">Carregando...</h1>
+                    <p class="dept-subtitle" id="dept-subtitle"></p>
+                </div>
+            </div>
+
+            <div class="dept-controls">
+                <span class="dept-count" id="dept-count"></span>
+                <div class="dept-sort">
+                    <label for="sort-select" class="sr-only">Ordenar por</label>
+                    <select id="sort-select" class="dept-sort__select">
+                        <option value="destaque">Destaque</option>
+                        <option value="menor">Menor pre\u00e7o</option>
+                        <option value="maior">Maior pre\u00e7o</option>
+                        <option value="nome">Nome A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="ofertas-container" class="offers-grid" role="list">
+                <div class="offers-empty">Carregando ofertas...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="quick-links" aria-label="Links rápidos">
+        <a href="/login" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill:currentColor;width:20px;height:20px;">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Início
+        </a>
+        <a href="/status" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            Status
+        </a>
+    </nav>
+
+    <footer class="footer" role="contentinfo">
+        <p>Powered by MikroTik &bull; <span class="footer__brand">Supermercado Santos</span></p>
+    </footer>
+
+    <script src="js/logger.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/quick-links.js"></script>
+    <script src="js/departamentos.js"></script>
+    <script src="js/departamento-page.js"></script>
+    <script>SantosDepartamento.init();</script>
+</body>
+
+</html>

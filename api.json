@@ -1,0 +1,29 @@
+{
+   "captive": $(if logged-in == 'yes')false$(else)true$(endif),
+   "status": "$(if logged-in == 'yes')connected$(else)redirect$(endif)",
+   "user-portal-url": "$(link-login-only)",
+   "appVersion": "1.1.0",
+$(if session-timeout-secs != 0)
+   "seconds-remaining": $(session-timeout-secs),
+$(endif)
+$(if remain-bytes-total)
+   "bytes-remaining": $(remain-bytes-total),
+$(endif)
+   "can-extend-session": true,
+   "hotspot": {
+      "identity": "$(identity)",
+      "macAddress": "$(mac-address)",
+      "ipAddress": "$(ip)",
+      "username": "$(username)",
+      "loginBy": "$(login-by)",
+      "uptime": "$(uptime)"
+   },
+   "monitoring": {
+      "health": "ok",
+      "timestamp": "$(uptime)",
+      "endpoints": {
+         "offers": "/ofertas.json",
+         "config": "/js/config.js"
+      }
+   }
+}

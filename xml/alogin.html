@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="WiFi Grátis - Supermercado Santos" />
+    <meta name="theme-color" content="#E8732A" />
+    <title>WiFi Grátis - Supermercado Santos</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+            <!-- HEADER -->
+                <div class="header">
+                    <img src="../img/logo.png" alt="Supermercado Santos" class="logo" />
+                    
+                    <div class="welcome-badge">
+                        <span class="welcome-badge__icon">🎉</span>
+                        <span class="welcome-badge__text">WiFi Grátis do Supermercado Santos!</span>
+                    </div>
+                    
+                    <p class="portal-tagline">Conecte-se gratuitamente e aproveite nossas ofertas!</p>
+                </div>
+
+                <!-- OFFERS SECTION -->
+                <section class="offers-section">
+                    <div class="offers-header">
+                        <div class="offers-title">
+                            <span class="offers-title__icon">🏷️</span>
+                            <span>Ofertas do Dia</span>
+                        </div>
+                        <span class="offers-badge">🔥 CONFIRA</span>
+                    </div>
+                    
+                    <div id="offers-container" class="offers-grid"></div>
+                </section>
+
+                <!-- STORE SECTION -->
+                <section class="store-section">
+                    <div class="section-title">
+                        <span class="section-title__icon">📍</span>
+                        <span>Nossas Lojas</span>
+                    </div>
+                    
+                    <div class="stores-grid">
+                        <div class="store-card">
+                            <div class="store-card__header">
+                                <span class="store-card__city">Bonito - MS</span>
+                                <span class="store-card__status open">● Aberto</span>
+                            </div>
+                            <div class="store-card__address">
+                                Rua Nova Jerusalém, 1.061<br>
+                                Centro
+                            </div>
+                            <div class="store-card__hours">
+                                <span>🕐</span> Seg-Sáb: 06h às 20h
+                            </div>
+                        </div>
+                        
+                        <div class="store-card">
+                            <div class="store-card__header">
+                                <span class="store-card__city">Jardim - MS</span>
+                                <span class="store-card__status open">● Aberto</span>
+                            </div>
+                            <div class="store-card__address">
+                                Av. Duque de Caxias, 1.583<br>
+                                Centro
+                            </div>
+                            <div class="store-card__hours">
+                                <span>🕐</span> Seg-Sáb: 06h às 20h
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TRUST BADGES -->
+                <div class="trust-badges" style="padding: 0 24px;">
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        </svg>
+                        Conexão Segura
+                    </div>
+                    <div class="trust-badge">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        </svg>
+                        Produtos Fiscalizados
+                    </div>
+                </div>
+
+                <!-- CTA BUTTON -->
+                <section class="cta-section">
+                    <h2 class="cta-title">Pronto para navegar?</h2>
+                    <p class="cta-subtitle">Cadastre-se no caixa ou use seu usuário existente</p>
+                    
+                    <a href="$(link-login)" class="cta-button">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+                        </svg>
+                        Conectar ao WiFi
+                    </a>
+                    
+                    $(if trial == 'yes')
+                    <p class="cta-trial">
+                        <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)">Usar acesso demo gratuito</a>
+                    </p>
+                    $(endif)
+                </section>
+
+                <!-- QUICK LINKS -->
+                <div class="quick-links">
+                    <a href="/status" class="quick-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                        </svg>
+                        Status
+                    </a>
+                    <a href="/logout" class="quick-link">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                        </svg>
+                        Sair
+                    </a>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer">
+                    <p>Powered by MikroTik &bull; <span class="footer__brand">Supermercado Santos</span></p>
+                    <p style="margin-top: 4px; opacity: 0.7;">Qualidade que faz bem &bull; Bonito & Jardim - MS</p>
+                </div>
+
+    <script src="../js/ofertas.js"></script>
+</body>
+
+</html>

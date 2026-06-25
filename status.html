@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <script>if(window.top!==window.self){window.top.location.href=window.self.location.href}</script>
+    $(if refresh-timeout)
+    <meta http-equiv="refresh" content="$(refresh-timeout-secs)">
+    $(endif)
+    <meta name="description" content="Status WiFi - Supermercado Santos" />
+    <meta name="theme-color" content="#E8732A" />
+    <title>Status - WiFi Supermercado Santos</title>
+    <script>
+        window.LOG_LEVEL = 'info';
+        window.HS_CONTEXT = {
+            macAddress: '$(mac-address)',
+            ipAddress: '$(ip)',
+            routerIdentity: '$(identity)',
+            hotspotUser: '$(username)',
+            sessionId: '$(session-id)',
+            loginBy: '$(login-by)',
+            page: 'status'
+        };
+        window.LOG_ENDPOINT = '';
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+    $(if advert-pending == 'yes')
+        var popup = '';
+        function focusAdvert() {
+            if (window.focus) popup.focus();
+        }
+        function openAdvert() {
+            popup = open('$(link-advert)', 'hotspot_advert', '');
+            setTimeout("focusAdvert()", 1000);
+        }
+    $(endif)
+
+    function openLogout() {
+        if (window.name != 'hotspot_status') return true;
+        open('$(link-logout)', 'hotspot_logout', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=280,height=250');
+        window.close();
+        return false;
+    }
+    </script>
+</head>
+
+<body $(if advert-pending == 'yes') onLoad="openAdvert()" $(endif)>
+
+    <a href="#main-content" style="position:fixed;top:-100%;left:50%;z-index:9999;background:var(--primary);color:#fff;padding:12px 24px;border-radius:0 0 8px 8px;font-weight:700;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Pular para conteúdo principal</a>
+
+    <header class="header">
+        <img src="img/logo.png" alt="Supermercado Santos" class="logo" />
+
+        <h1 class="greeting">
+            $(if login-by == 'trial')
+                Olá, visitante demo! 👋
+            $(elif login-by != 'mac')
+                Olá, $(username)! 👋
+            $(endif)
+        </h1>
+
+        <div class="welcome-badge welcome-badge--success">
+            <span class="welcome-badge__icon" aria-hidden="true">✅</span>
+            <span class="welcome-badge__text">Conectado ao WiFi Grátis</span>
+        </div>
+    </header>
+
+    <main id="main-content" role="main">
+
+        <section class="section--status" aria-label="Status da conexão">
+            <div class="status-box">
+                <table>
+                    <tr>
+                        <td>Endereço IP</td>
+                        <td>$(ip)</td>
+                    </tr>
+                    <tr>
+                        <td>Upload</td>
+                        <td>$(bytes-in-nice)</td>
+                    </tr>
+                    <tr>
+                        <td>Download</td>
+                        <td>$(bytes-out-nice)</td>
+                    </tr>
+                    $(if session-time-left)
+                    <tr>
+                        <td>Tempo conectado</td>
+                        <td>$(uptime)</td>
+                    </tr>
+                    <tr>
+                        <td>Tempo restante</td>
+                        <td>$(session-time-left)</td>
+                    </tr>
+                    $(else)
+                    <tr>
+                        <td>Tempo conectado</td>
+                        <td>$(uptime)</td>
+                    </tr>
+                    $(endif)
+                    $(if blocked == 'yes')
+                    <tr>
+                        <td>Status</td>
+                        <td>
+                            <a href="$(link-advert)" target="hotspot_advert" style="color: var(--primary);">Ver propaganda</a>
+                        </td>
+                    </tr>
+                    $(elif refresh-timeout)
+                    <tr>
+                        <td>Próxima atualização</td>
+                        <td>$(refresh-timeout)</td>
+                    </tr>
+                    $(endif)
+                </table>
+            </div>
+
+            $(if login-by-mac != 'yes')
+            <form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
+                <input type="submit" value="Sair do WiFi" class="logout-btn" />
+            </form>
+            $(endif)
+        </section>
+
+        <!-- OFFERS -->
+        <section class="section section--offers" aria-labelledby="offers-heading-status">
+            <div class="offers-header">
+                <div class="offers-title" id="offers-heading-status">
+                    <span class="offers-title__icon" aria-hidden="true">🏷️</span>
+                    <span>Ofertas do Dia</span>
+                </div>
+                <span class="offers-badge">🔥 CONFIRA</span>
+            </div>
+
+            <div id="offers-container" class="offers-grid" role="list"></div>
+        </section>
+
+        <!-- STORE INFO -->
+        <div class="store-info store-info--inset store-info--status">
+            <div class="store-info__header">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Nossas Lojas
+            </div>
+            <div class="store-info__address">
+                📍 Bonito - MS: Rua Nova Jerusalém, 1.061<br>
+                📍 Jardim - MS: Av. Duque de Caxias, 1.583
+            </div>
+            <div class="store-info__hours">
+                <span class="dot"></span>
+                Seg-Sáb: 06h às 20h
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="quick-links" aria-label="Links rápidos">
+        <a href="$(link-orig)" class="quick-link" target="_blank">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Navegar
+        </a>
+        <a href="/logout" class="quick-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            Sair
+        </a>
+    </nav>
+
+    <footer class="footer" role="contentinfo">
+        <p>Powered by MikroTik &bull; <span class="footer__brand">Supermercado Santos</span></p>
+    </footer>
+
+    <script src="js/quick-links.js"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/ofertas.js"></script>
+</body>
+
+</html>

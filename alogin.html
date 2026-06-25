@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="2; url=$(link-redirect)">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <script>if(window.top!==window.self){window.top.location.href=window.self.location.href}</script>
+    <meta name="description" content="Conectado com sucesso ao WiFi Grátis do Supermercado Santos." />
+    <meta name="theme-color" content="#E8732A" />
+    <title>Conectado - WiFi Supermercado Santos</title>
+    <script>
+        window.LOG_LEVEL = 'info';
+        window.HS_CONTEXT = {
+            macAddress: '$(mac-address)',
+            ipAddress: '$(ip)',
+            routerIdentity: '$(identity)',
+            hotspotUser: '$(username)',
+            sessionId: '$(session-id)',
+            loginBy: '$(login-by)',
+            page: 'alogin'
+        };
+        window.LOG_ENDPOINT = '';
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        function startClock() {
+            $(if popup == 'true')
+            open('$(link-status)', 'hotspot_status', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=290,height=200');
+            $(endif)
+            location.href = unescape('$(link-redirect-esc)');
+        }
+    </script>
+</head>
+
+<body onLoad="startClock()">
+
+    <a href="#main-content" style="position:fixed;top:-100%;left:50%;z-index:9999;background:var(--primary);color:#fff;padding:12px 24px;border-radius:0 0 8px 8px;font-weight:700;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Pular para conteúdo principal</a>
+
+    <header class="header">
+        <img src="img/logo.png" alt="Supermercado Santos" class="logo" />
+    </header>
+
+    <main id="main-content" role="main">
+
+        <div class="status-message status-message--success animate-slide" role="status">
+            <div class="status-message__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </div>
+            <h2 class="status-message__title">Conectado com Sucesso!</h2>
+            <p class="status-message__desc">Você será redirecionado em alguns segundos...</p>
+            <p class="mt-md" style="color: var(--text-muted); font-size: 0.875rem;">
+                Aproveite nossas ofertas enquanto navega 🎉
+            </p>
+        </div>
+
+        <div class="progress-bar" role="progressbar" aria-label="Redirecionando">
+            <div class="progress-bar__track">
+                <div class="progress-bar__fill"></div>
+            </div>
+        </div>
+
+        <p class="fallback-link info">
+            Se nada acontecer, clique <a href="$(link-redirect)">aqui</a>
+        </p>
+
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <p>Powered by MikroTik &bull; <span class="footer__brand">Supermercado Santos</span></p>
+    </footer>
+
+    <script src="js/quick-links.js"></script>
+    <script src="js/logger.js"></script>
+</body>
+
+</html>
