@@ -20,8 +20,16 @@
              loginBy: '$(login-by)',
              page: 'login'
          };
-         window.LOG_ENDPOINT = '';
-      </script>
+          window.LOG_ENDPOINT = '';
+
+          window.HOTSPOT_API = (function () {
+               var base = 'http://192.168.1.246:8899';
+              return {
+                  baseUrl: base,
+                  endpoint: base + '/api/create-user.php'
+              };
+          })();
+       </script>
       <link rel="stylesheet" href="css/style.css">
       <script>
          (function() {
@@ -273,7 +281,7 @@
                   <p class="login-subtitle">Preencha seus dados para liberar a internet</p>
                </div>
                <div id="reg-message" class="reg-message"></div>
-               <form id="register-form" action="http://192.168.1.198:8000/api/create-user.php" method="post">
+               <form id="register-form" action="" method="post">
                   <!-- Nome Completo -->
                   <label for="reg-name">
                      <span class="sr-only">Nome Completo</span>
@@ -389,9 +397,10 @@
                    var regMsg = document.getElementById('reg-message');
                    var regSubmit = document.getElementById('reg-submit');
                    
-                   if (regForm && regMsg && regSubmit) {
-                       regForm.addEventListener('submit', function(e) {
-                           e.preventDefault();
+                    if (regForm && regMsg && regSubmit) {
+                        regForm.action = window.HOTSPOT_API.endpoint;
+                        regForm.addEventListener('submit', function(e) {
+                            e.preventDefault();
                            
                            var name = document.getElementById('reg-name').value.trim();
                            var phone = document.getElementById('reg-phone').value.replace(/\D/g, '');
@@ -445,7 +454,7 @@
                            formData.append('cpf', document.getElementById('reg-cpf').value);
                            formData.append('consent', consent ? 'true' : 'false');
                            
-                           fetch('http://192.168.1.198:8000/api/create-user.php', {
+                            fetch(window.HOTSPOT_API.endpoint, {
                                method: 'POST',
                                body: formData
                            })
@@ -676,8 +685,9 @@
            window.SantosDeptos.renderizarGrid();
          })();
       </script>
-      <script src="js/dynamic-hero.js"></script>
-      <script src="js/header-scroll.js"></script>
-      <script src="js/ofertas.js"></script>
-   </body>
+       <script src="js/dynamic-hero.js"></script>
+       <script src="js/header-scroll.js"></script>
+       <script src="js/ofertas.js"></script>
+       <script src="js/api-config.js"></script>
+    </body>
 </html>
