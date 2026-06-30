@@ -22,16 +22,20 @@ window.SantosHero = (function() {
 
       if (theme.banner) {
         container.classList.add('hero-dynamic--with-banner');
-        container.innerHTML =
-          '<img src="' + theme.banner + '" alt="' + theme.title + '" class="hero-dynamic__banner-img" onerror="' +
-          'this.style.display=\'none\';' +
-          'var c=this.closest(\'.hero-dynamic\');if(c){c.classList.remove(\'hero-dynamic--with-banner\');' +
-          'c.innerHTML=\'<div class=\\"hero-dynamic__icon-wrap\\" aria-hidden=\\"true\\"><div class=\\"hero-dynamic__icon\\">' + theme.icon + '</div></div>' +
-          '<h1 class=\\"hero-dynamic__title\\">' + theme.title + '</h1>' +
-          '<p class=\\"hero-dynamic__desc\\">' + theme.desc + '</p>\';' +
-          'c.style.setProperty(\'--hero-accent\',\'' + theme.accent + '\');' +
-          'c.style.setProperty(\'--hero-accent-rgb\',\'' + theme.accentRgb + '\');' +
-          '" />';
+        container.innerHTML = '<img src="" alt="' + theme.title.replace(/"/g, '&quot;') + '" class="hero-dynamic__banner-img">';
+        var img = container.querySelector('img');
+        img.onerror = function () {
+          if (!container) return;
+          this.style.display = 'none';
+          container.classList.remove('hero-dynamic--with-banner');
+          container.innerHTML =
+            '<div class="hero-dynamic__icon-wrap" aria-hidden="true"><div class="hero-dynamic__icon">' + theme.icon + '</div></div>' +
+            '<h1 class="hero-dynamic__title">' + theme.title.replace(/</g, '&lt;') + '</h1>' +
+            '<p class="hero-dynamic__desc">' + theme.desc.replace(/</g, '&lt;') + '</p>';
+          container.style.setProperty('--hero-accent', theme.accent);
+          container.style.setProperty('--hero-accent-rgb', theme.accentRgb || '');
+        };
+        img.src = theme.banner;
       } else {
         container.innerHTML =
           '<div class="hero-dynamic__icon-wrap" aria-hidden="true"><div class="hero-dynamic__icon">' + theme.icon + '</div></div>' +

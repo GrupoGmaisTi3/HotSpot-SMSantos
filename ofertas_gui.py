@@ -183,14 +183,15 @@ def batch_export():
     try:
         ftp = ftplib.FTP(MIKROTIK_HOST, timeout=10)
         ftp.login(MIKROTIK_USER, MIKROTIK_PASS)
-        
+
         ensure_remote_parent_dir(ftp, f"{MIKROTIK_PATH}/ofertas_combinado.json")
         ftp.cwd(MIKROTIK_PATH)
-        
+
         local = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
-        with open(local, "rb") as f:
-            ftp.storbinary("STOR ofertas_combinado.json", f)
-        log(f"Upload OK: {MIKROTIK_PATH}/ofertas_combinado.json")
+        if os.path.isfile(local):
+            with open(local, "rb") as f:
+                ftp.storbinary("STOR ofertas_combinado.json", f)
+            log(f"Upload OK: {MIKROTIK_PATH}/ofertas_combinado.json")
     except Exception as e:
         log(f"Upload falhou: {e}")
     finally:
@@ -245,6 +246,23 @@ def sync_hotspot():
                     log(f"  Sincronizado: {remoto}")
             except Exception as e:
                 log(f"  ERRO ao enviar {remoto}: {e}")
+
+    # Upload do combinado (excluido do walk acima por estar em ofertas_export/)
+    try:
+        ftp.cwd("/")
+    except Exception:
+        pass
+    local = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
+    if os.path.isfile(local):
+        remoto = os.path.join(MIKROTIK_HOTSPOT, OUTPUT_DIR, "ofertas_combinado.json").replace("\\", "/")
+        try:
+            ensure_remote_parent_dir(ftp, remoto)
+            with open(local, "rb") as f:
+                ftp.storbinary(f"STOR {remoto}", f)
+            log(f"  Sincronizado: {remoto}")
+            enviados += 1
+        except Exception as e:
+            log(f"  ERRO ao enviar {remoto}: {e}")
 
     ftp.quit()
     log(f"Sincronizacao concluida. {enviados} arquivos atualizados em {MIKROTIK_HOTSPOT}/")
