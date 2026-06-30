@@ -28,7 +28,7 @@ def log(msg):
         log_path = os.path.join(OUTPUT_DIR, "export.log")
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(formatted + "\n")
-    except Exception:
+    except OSError:
         pass
     
     if _gui_log_callback:
@@ -94,6 +94,15 @@ def prune_local_history():
         log(f"Erro na limpeza do historico local: {e}")
 
 
+def _salvar_combinado(combined, timestamp):
+    path_fixed = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
+    path_ts = os.path.join(OUTPUT_DIR, f"ofertas_combinado_{timestamp}.json")
+    for path in (path_fixed, path_ts):
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(combined, f, indent=2, ensure_ascii=False)
+    log(f"Salvo: {path_fixed}")
+    log(f"Historico: {path_ts}")
+    prune_local_history()
 
 
 def batch_export():
@@ -114,7 +123,7 @@ def batch_export():
         if not token:
             log("ERRO: Falha na autenticacao - Token nao obtido")
             sys.exit(1)
-        log(f"  Token obtido com sucesso: {token[:40]}...")
+        log(f"  Token obtido: {token[:20]}...{token[-8:]}")
     except Exception as ex:
         log(f"ERRO de conexao na autenticacao: {ex}")
         sys.exit(1)
@@ -166,38 +175,28 @@ def batch_export():
             "departamentos": [d["descricao"] for d in departamentos],
             "ofertas": todas_ofertas
         }
-        path_fixed = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
-        path_ts = os.path.join(OUTPUT_DIR, f"ofertas_combinado_{timestamp}.json")
-        try:
-            with open(path_fixed, "w", encoding="utf-8") as f:
-                json.dump(combined, f, indent=2, ensure_ascii=False)
-            with open(path_ts, "w", encoding="utf-8") as f:
-                json.dump(combined, f, indent=2, ensure_ascii=False)
-            log(f"Arquivo fixo salvo: {path_fixed}")
-            log(f"Arquivo historico salvo: {path_ts}")
-            
-            # Limpa o histórico local mantendo apenas os 3 mais recentes
-            prune_local_history()
-        except Exception as ex:
-            log(f"ERRO ao gravar arquivos JSON locais: {ex}")
+        _salvar_combinado(combined, timestamp)
 
     # 5. Upload via FTP
     log(f"Iniciando envio via FTP para o MikroTik ({MIKROTIK_HOST})...")
+    ftp = None
     try:
         ftp = ftplib.FTP(MIKROTIK_HOST, timeout=10)
         ftp.login(MIKROTIK_USER, MIKROTIK_PASS)
         
-        # Garante que a pasta pai exista antes do upload
         ensure_remote_parent_dir(ftp, f"{MIKROTIK_PATH}/ofertas_combinado.json")
         ftp.cwd(MIKROTIK_PATH)
         
         local = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
         with open(local, "rb") as f:
             ftp.storbinary("STOR ofertas_combinado.json", f)
-        ftp.quit()
         log(f"Upload OK: {MIKROTIK_PATH}/ofertas_combinado.json")
     except Exception as e:
         log(f"Upload falhou: {e}")
+    finally:
+        if ftp:
+            try: ftp.quit()
+            except Exception: pass
 
     log(f"Exportacao concluida em lote: {len(departamentos)} departamentos, {total} ofertas no total")
 
@@ -210,8 +209,8 @@ def sync_hotspot():
     """Envia todos os arquivos do portal para flash/hotspot/ via FTP"""
     EXT_INCLUIR = {".html", ".css", ".js", ".woff2", ".png", ".jpg",
                    ".jpeg", ".gif", ".svg", ".webp", ".ico", ".xml", ".txt", ".json"}
-    EXCLUIR_DIRS = {"ofertas_export", "docs", "__pycache__", ".git", "backup"}
-    EXCLUIR_ARQS = {".env", ".gitignore", "AGENTS.md", "PRODUCT.md"}
+    EXCLUIR_DIRS = {"ofertas_export", "docs", "__pycache__", ".git", "backup-mikrotik", ".agents", ".claude", ".opencode"}
+    EXCLUIR_ARQS = {".env", ".gitignore", "AGENTS.md", "PRODUCT.md", "opencode.json"}
 
     log("Iniciando sincronizacao de arquivos do hotspot via FTP...")
 
@@ -261,7 +260,6 @@ class OfertasApp:
 
         self.departamentos = []
         self.token = None
-        self.check_vars = {}
 
         # Registra callback de log global para atualização em tempo real na interface
         global _gui_log_callback
@@ -274,7 +272,6 @@ class OfertasApp:
         COLOR_TEXT = "#2D3748"       # Cinza escuro para textos
         COLOR_MUTED = "#718096"      # Cinza médio
         COLOR_BORDER = "#E2E8F0"     # Borda sutil
-        FONT_TITLE = ("Segoe UI", 12, "bold")
         FONT_BODY = ("Segoe UI", 10)
         FONT_BUTTON = ("Segoe UI", 10, "bold")
 
@@ -284,12 +281,8 @@ class OfertasApp:
         style.theme_use("clam")
 
         # Configuração de Estilos ttk
-        style.configure("TFrame", background=COLOR_BG)
-        style.configure("Card.TFrame", background=COLOR_CARD_BG, borderwidth=1, relief="solid")
-
         style.configure("TLabel", background=COLOR_BG, foreground=COLOR_TEXT, font=FONT_BODY)
         style.configure("Header.TLabel", font=("Segoe UI", 14, "bold"), foreground=COLOR_PRIMARY, background=COLOR_BG)
-        style.configure("Section.TLabel", font=("Segoe UI", 10, "bold"), foreground=COLOR_TEXT, background=COLOR_BG)
         style.configure("Muted.TLabel", font=("Segoe UI", 9), foreground=COLOR_MUTED, background=COLOR_BG)
 
         # Botões Principais (Laranja)
@@ -331,13 +324,10 @@ class OfertasApp:
         # ----------------------------------------------------
         header_frame = ttk.Frame(main_frame)
         header_frame.pack(fill=tk.X, pady=(0, 12))
-
         ttk.Label(header_frame, text="Supermercado Santos — HotSpot captive portal", style="Header.TLabel").pack(anchor=tk.W)
         ttk.Label(header_frame, text="Painel Integrado de Controle e Sincronização Web RouterOS", style="Muted.TLabel").pack(anchor=tk.W)
 
-        # Divisor visual
-        divider = ttk.Separator(main_frame, orient='horizontal')
-        divider.pack(fill=tk.X, pady=(0, 12))
+        ttk.Separator(main_frame, orient='horizontal').pack(fill=tk.X, pady=(0, 12))
 
         # ----------------------------------------------------
         # 2. Painel de Controle (Disposição em Grid Profissional de 3 Colunas)
@@ -357,11 +347,8 @@ class OfertasApp:
         prep_frame.rowconfigure(0, weight=1)
         prep_frame.rowconfigure(1, weight=1)
 
-        btn_connect = ttk.Button(prep_frame, text="Conectar e Listar", command=self.conectar_e_listar)
-        btn_connect.grid(row=0, column=0, sticky="we", pady=(0, 6))
-
-        btn_fav = ttk.Button(prep_frame, text="Selecionar Favoritos", command=self.selecionar_padrao, style="Secondary.TButton")
-        btn_fav.grid(row=1, column=0, sticky="we")
+        ttk.Button(prep_frame, text="Conectar e Listar", command=self.conectar_e_listar).grid(row=0, column=0, sticky="we", pady=(0, 6))
+        ttk.Button(prep_frame, text="Selecionar Favoritos", command=self.selecionar_padrao, style="Secondary.TButton").grid(row=1, column=0, sticky="we")
 
         # Coluna 2: Exportação de Ofertas
         exp_frame = ttk.LabelFrame(control_frame, text=" 2. Exportação de Ofertas ", padding=10)
@@ -370,11 +357,8 @@ class OfertasApp:
         exp_frame.rowconfigure(0, weight=1)
         exp_frame.rowconfigure(1, weight=1)
 
-        btn_export = ttk.Button(exp_frame, text="Exportar Selecionados", command=self.exportar)
-        btn_export.grid(row=0, column=0, sticky="we", pady=(0, 6))
-
-        btn_export_all = ttk.Button(exp_frame, text="Exportar TODOS", command=self.exportar_todos, style="Secondary.TButton")
-        btn_export_all.grid(row=1, column=0, sticky="we")
+        ttk.Button(exp_frame, text="Exportar Selecionados", command=self.exportar).grid(row=0, column=0, sticky="we", pady=(0, 6))
+        ttk.Button(exp_frame, text="Exportar TODOS", command=self.exportar_todos, style="Secondary.TButton").grid(row=1, column=0, sticky="we")
 
         # Coluna 3: Sincronização do Hotspot
         sync_frame = ttk.LabelFrame(control_frame, text=" 3. Portal Captivo HotSpot ", padding=10)
@@ -382,15 +366,12 @@ class OfertasApp:
         sync_frame.columnconfigure(0, weight=1)
         sync_frame.rowconfigure(0, weight=1)
 
-        btn_sync = ttk.Button(sync_frame, text="Atualizar Arquivos\ndo HotSpot", command=self.sincronizar_hotspot_gui)
-        btn_sync.grid(row=0, column=0, sticky="nswe", pady=1)
+        ttk.Button(sync_frame, text="Atualizar Arquivos\ndo HotSpot", command=self.sincronizar_hotspot_gui).grid(row=0, column=0, sticky="nswe", pady=1)
 
         # ----------------------------------------------------
         # 3. Tabela de Departamentos
         # ----------------------------------------------------
-        table_label_frame = ttk.Frame(main_frame)
-        table_label_frame.pack(fill=tk.X, pady=(0, 4))
-        ttk.Label(table_label_frame, text="Departamentos disponíveis para exportação:", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W)
+        ttk.Label(main_frame, text="Departamentos disponíveis para exportação:", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(0, 4))
 
         tree_frame = ttk.Frame(main_frame)
         tree_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 12))
@@ -419,9 +400,7 @@ class OfertasApp:
         # ----------------------------------------------------
         # 4. Terminal de Logs & Barra de Progresso
         # ----------------------------------------------------
-        log_label_frame = ttk.Frame(main_frame)
-        log_label_frame.pack(fill=tk.X, pady=(0, 4))
-        ttk.Label(log_label_frame, text="Log de Operações:", font=("Segoe UI", 9, "bold")).pack(anchor=tk.W)
+        ttk.Label(main_frame, text="Log de Operações:", font=("Segoe UI", 9, "bold")).pack(anchor=tk.W, pady=(0, 4))
 
         log_frame = ttk.Frame(main_frame)
         log_frame.pack(fill=tk.X, pady=(0, 6))
@@ -469,7 +448,7 @@ class OfertasApp:
                 messagebox.showerror("Erro", "Falha na autenticacao")
                 return
 
-            self.log(f"Token obtido: {self.token[:40]}...")
+            self.log(f"Token obtido: {self.token[:20]}...{self.token[-8:]}")
 
             self.log("Listando departamentos...")
             resp = requests.get(f"{BASE_URL}/v1.1/departamentos",
@@ -481,12 +460,9 @@ class OfertasApp:
             for item in self.tree.get_children():
                 self.tree.delete(item)
 
-            self.check_vars.clear()
             for i, d in enumerate(self.departamentos):
                 cod = d.get("codigo", "")
                 nome = d.get("descricao", "")
-                var = tk.StringVar(value="")
-                self.check_vars[cod] = var
                 tag_row = "evenrow" if i % 2 == 0 else "oddrow"
                 self.tree.insert("", tk.END, values=(cod, nome, "☐"), tags=(cod, tag_row))
 
@@ -555,7 +531,6 @@ class OfertasApp:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
             todas_ofertas = []
-            ofertas_por_depto = {}
 
             for depto in selecionados:
                 cod = depto["codigo"]
@@ -576,12 +551,10 @@ class OfertasApp:
                     item["_departamento_codigo"] = cod
                     item["_departamento_nome"] = nome
 
-                ofertas_por_depto[nome] = items
                 todas_ofertas.extend(items)
                 total_ofertas += len(items)
                 self.log(f"  -> {len(items)} ofertas encontradas")
 
-            # Exportar combinado
             if selecionados:
                 combined = {
                     "exportado_em": timestamp,
@@ -589,19 +562,7 @@ class OfertasApp:
                     "departamentos": [d["nome"] for d in selecionados],
                     "ofertas": todas_ofertas
                 }
-                # Versao fixa (consumida pelo portal)
-                filepath_fixed = os.path.join(OUTPUT_DIR, "ofertas_combinado.json")
-                with open(filepath_fixed, "w", encoding="utf-8") as f:
-                    json.dump(combined, f, indent=2, ensure_ascii=False)
-                self.log(f"Salvo: {filepath_fixed}")
-                # Versao com timestamp (historico)
-                filepath_ts = os.path.join(OUTPUT_DIR, f"ofertas_combinado_{timestamp}.json")
-                with open(filepath_ts, "w", encoding="utf-8") as f:
-                    json.dump(combined, f, indent=2, ensure_ascii=False)
-                self.log(f"Salvo: {filepath_ts}")
-
-                # Limpa o histórico local mantendo apenas os 3 mais recentes
-                prune_local_history()
+                _salvar_combinado(combined, timestamp)
 
             # Upload do combinado para o MikroTik
             self._upload_to_mikrotik()
@@ -625,21 +586,24 @@ class OfertasApp:
             return
 
         self.log(f"Enviando para MikroTik ({MIKROTIK_HOST})...")
+        ftp = None
         try:
             ftp = ftplib.FTP(MIKROTIK_HOST, timeout=10)
             ftp.login(MIKROTIK_USER, MIKROTIK_PASS)
 
-            # Garante que a pasta pai exista antes do CWD
             ensure_remote_parent_dir(ftp, f"{MIKROTIK_PATH}/ofertas_combinado.json")
             ftp.cwd(MIKROTIK_PATH)
 
             with open(local_path, "rb") as f:
                 ftp.storbinary("STOR ofertas_combinado.json", f)
 
-            ftp.quit()
             self.log("Upload concluido: flash/hotspot/ofertas_export/ofertas_combinado.json")
         except Exception as e:
             self.log(f"Upload falhou: {e}")
+        finally:
+            if ftp:
+                try: ftp.quit()
+                except Exception: pass
 
     def sincronizar_hotspot_gui(self):
         """Dispara a sincronização de arquivos do hotspot em thread secundária"""

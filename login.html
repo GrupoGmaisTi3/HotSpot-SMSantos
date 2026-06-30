@@ -356,22 +356,7 @@
                        });
                    }
                
-                   // Toggle Terms
-                   var showTerms = document.getElementById('show-terms');
-                   var termsContainer = document.getElementById('terms-container');
-                   if (showTerms && termsContainer) {
-                       showTerms.addEventListener('click', function(e) {
-                           e.preventDefault();
-                           if (termsContainer.style.display === 'none') {
-                               termsContainer.style.display = 'block';
-                               termsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                           } else {
-                               termsContainer.style.display = 'none';
-                           }
-                       });
-                   }
-               
-                   // CPF Masking
+                    // CPF Masking
                    var regCpf = document.getElementById('reg-cpf');
                    if (regCpf && window.SantosMasks) {
                        regCpf.addEventListener('input', function(e) {
@@ -688,6 +673,5 @@
        <script src="js/dynamic-hero.js"></script>
        <script src="js/header-scroll.js"></script>
        <script src="js/ofertas.js"></script>
-       <script src="js/api-config.js"></script>
     </body>
 </html>

@@ -746,27 +746,6 @@ body {
   background: var(--success);
 }
 
-/* ── Offers by Department ──────────────────── */
-.offers-department {
-  margin-bottom: var(--space-lg);
-}
-
-.offers-department:last-child {
-  margin-bottom: 0;
-}
-
-.offers-department__title {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--dark);
-  margin-bottom: var(--space-sm);
-  padding-bottom: var(--space-xs);
-  border-bottom: 2px solid var(--primary-soft);
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
 /* ── Skeleton Loading ─────────────────────── */
 .offer-card--skeleton {
   background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
@@ -1808,14 +1787,7 @@ input[type="submit"]:active,
   display: block;
 }
 
-.footer--mobile .footer__row {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-sm);
-  text-align: center;
-}
+
 
 .footer--mobile .footer__brand-block {
   display: flex;
@@ -2696,9 +2668,7 @@ input[type="submit"]:active,
     font-size: 0.75rem;
   }
 
-  .offers-department__title {
-    font-size: 1rem;
-  }
+
 
   .offers-header {
     margin-bottom: var(--space-lg);

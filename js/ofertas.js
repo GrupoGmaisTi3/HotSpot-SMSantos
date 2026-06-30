@@ -467,7 +467,9 @@
   // ── Renderizacao ──────────────────────────────────────────────────
 
   function formatarPreco(preco) {
-    return parseFloat(preco).toFixed(2).replace('.', ',');
+    return window.SantosUtils
+      ? window.SantosUtils.formatarPreco(preco)
+      : parseFloat(preco).toFixed(2).replace('.', ',');
   }
 
   function labelEmbalagem(emb) {

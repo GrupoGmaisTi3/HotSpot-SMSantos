@@ -43,7 +43,7 @@ Static HTML/CSS/JS captive portal served by MikroTik RouterOS. No build system, 
 - Up to 8 offer cards, distributed across departments.
 - New card fields: `.offer-card__marca` (brand), `.offer-card__old-price` (strikethrough), `.offer-card__badge--off` (%-off badge).
 - Exposed globally as `window.SantosOffers`.
-- **Config**: `js/config.js` contém `window.RP_CONFIG` com `baseUrl`, `fallbackUrl`, `unidade`, `usuario`, `senha`. Carregado antes de `ofertas.js` em todas as páginas que exibem ofertas. Exemplo em `js/config.example.js`. Use `.env` para documentar variáveis localmente (sem build step).
+- **Config**: `js/config.js` contém `window.RP_CONFIG` com `baseUrl`, `fallbackUrl`, `unidade`, `usuario`, `senha`. Carregado antes de `ofertas.js` em todas as páginas que exibem ofertas. Use `.env` para documentar variáveis localmente (sem build step).
 - **Fallback de servidor**: se `baseUrl` falhar (CORS/rede), `ofertas.js` tenta `fallbackUrl` automaticamente via `fetchWithFallback()`. Se ambos falharem, usa `/ofertas.json` (fallback local).
 
 ## Department identification
@@ -290,7 +290,7 @@ Endpoint JSON agora inclui:
 2. js/logger.js          — Logger global + error handlers
 3. js/config.js          — Credenciais RP API
 4. js/masks.js           — Máscaras de input (CPF, telefone)
-5. js/utils.js           — Utilitarios (fetchWithTimeout, formatarPreco)
+5. js/utils.js           — Utilitarios (formatarPreco)
 6. js/quick-links.js     — Navegacao rapida (Status, Sair)
 7. js/departamentos.js   — Identificacao de departamentos + CODIGO_MAP
 8. js/dynamic-hero.js    — Hero dinamico
